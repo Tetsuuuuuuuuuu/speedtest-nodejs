@@ -4,8 +4,6 @@ const https = require('https');
 const crypto = require('crypto');
 const path = require('path');
 const fs = require('fs');
-const multer = require('multer');
-const cors = require('cors'); // Import the CORS middleware
 
 const app = express();
 const randomData = crypto.randomBytes(1024 * 1024); // This is a block of 1MiB random data
@@ -16,9 +14,6 @@ var certificate = null;
 app.use('/.well-known', express.static(path.join(__dirname, ".well-known")))
 app.use('/public', express.static(path.join(__dirname, "public")))
 app.set("view engine", "ejs")
-
-// Enable CORS for all routes
-app.use(cors());
 
 // Parses command line arguments
 let args = process.argv;
@@ -49,46 +44,60 @@ if (httpsPort) {
   certificate = fs.readFileSync(certificatePath);
 }
 
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
-
 // Render index page
 app.get("/", (req, res) => {
   res.render("index.ejs")
 });
 
-// Endpoint to download the test file
-app.get("/download", (req, res) => {
-  const fileSize = randomData.length * 100; // 100mb
 
-  res.writeHead(200, {
-    'Content-Type': 'application/octet-stream',
-    'Content-Length': fileSize
+// Implement Download and Upload routes
+
+// Download route
+app.get('/download', (req, res) => {
+  // Start measuring time
+  const startTime = process.hrtime();
+
+  // Set response headers
+  res.set('Content-Type', 'application/octet-stream');
+  res.set('Content-Disposition', 'attachment; filename=random-data.bin');
+
+  // Send random data
+  res.send(randomData);
+
+  // End measuring time
+  const endTime = process.hrtime(startTime);
+
+  // Calculate download speed
+  const elapsedTime = endTime[0] + endTime[1] / 1e9; // in seconds
+  const fileSizeMB = randomData.length / 1024 / 1024; // in MB
+  const downloadSpeedMBps = fileSizeMB / elapsedTime;
+
+  console.log(`Download speed: ${downloadSpeedMBps.toFixed(2)} MB/s`);
+});
+
+// Upload route
+app.post('/upload', (req, res) => {
+  const startTime = process.hrtime();
+
+  let dataReceived = 0;
+
+  req.on('data', (chunk) => {
+    dataReceived += chunk.length;
   });
 
-  // Create a readable stream from the random data
-  const stream = require('stream');
-  const readable = new stream.Readable();
-  readable.push(randomData);
-  readable.push(null); // Signal the end of the stream
+  req.on('end', () => {
+    const endTime = process.hrtime(startTime);
 
-  // Pipe the data to the response
-  readable.pipe(res);
+    const elapsedTime = endTime[0] + endTime[1] / 1e9; // in seconds
+    const uploadSpeedMBps = dataReceived / 1024 / 1024 / elapsedTime; // in MB/s
+
+    console.log(`Upload speed: ${uploadSpeedMBps.toFixed(2)} MB/s`);
+    res.sendStatus(200);
+  });
 });
 
-// Multer configuration for file upload
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
 
-// Endpoint to handle file uploads
-app.post('/upload', upload.single('file'), (req, res) => {
-  const fileSize = req.file ? req.file.size : 0; // Get file size from the uploaded file
 
-  res.status(200).send({ fileSize });
-});
 
 // Creates a HTTP & a HTTPS web server with the specified options
 http.createServer(app).listen(httpPort, host, () => {
