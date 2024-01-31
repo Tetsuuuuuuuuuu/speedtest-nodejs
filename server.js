@@ -11,22 +11,24 @@ var certificate = null
 
 app.use('/.well-known', express.static(path.join(__dirname, ".well-known")))
 
-// Set the host and port if supplied
+// Parses command line arguments
 let args = process.argv;
-let host, _path, httpPort, httpsPort;
+let host, httpPort, httpsPort, privateKeyPath, certificatePath;
 args.forEach((arg, index) => {
   if (arg === '--server-ip' && index < args.length - 1) {
     host = args[index + 1];
-  } else if (arg === '--server-path' && index < args.length - 1) {
-    _path = args[index + 1];
   } else if (arg === '--server-httpPort' && index < args.length - 1) {
     httpPort = args[index + 1];
   }else if (arg === '--server-httpsPort' && index < args.length - 1) {
     httpsPort = args[index + 1];
+  }else if (arg === '--server-privateKey' && index < args.length - 1) {
+    privateKeyPath = args[index + 1];
+  }else if (arg === '--server-certificate' && index < args.length - 1) {
+    certificatePath = args[index + 1];
   }
 });
 
-// If options are not supplied, set sane defaults
+// Sets default values for command line arguments
 if (!host) {
   host = '0.0.0.0';
 }
@@ -34,15 +36,12 @@ if (!httpPort) {
   httpPort = 80;
 }
 if (httpsPort) {
-  privateKey = fs.readFileSync("ssl/key.pem");
-  certificate = fs.readFileSync("ssl/cert.pem");
-}
-if (!_path) {
-  _path = '*';
+  privateKey = fs.readFileSync(privateKeyPath);
+  certificate = fs.readFileSync(certificatePath);
 }
 
 // Sends random data to client
-app.get(_path, (req, res) => {
+app.get("/", (req, res) => {
   console.log("Sending data...");
   let baseTime = new Date().getTime();
 
@@ -60,7 +59,7 @@ app.get(_path, (req, res) => {
 });
 
 // Receives uploaded data from client
-app.post('*', (req, res) => {
+app.post('/', (req, res) => {
   console.log('Receiving data...');
   let baseTime = new Date().getTime();
   let dataSize = 0;
