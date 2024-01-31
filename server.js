@@ -6,7 +6,7 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const randomData = crypto.randomBytes(1024 * 1024); // This is a block of 1MiB random data
+const randomData = crypto.randomBytes(1024 * 1024) * 10; // This is a block of 1MiB random data
 
 var privateKey = null;
 var certificate = null;

@@ -24,7 +24,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
             downloadSpeedSum += downloadSpeed;
             testsCompleted++;
             if (testsCompleted === numTests) {
+                setTimeout(() => {
               showResults();
+                }, 5000);
             }
           })
           .catch(error => {
