@@ -43,8 +43,8 @@ function measureSpeed(url, size, durationSeconds, type) {
     });
 }
 
-const uploadUrl = 'http://localhost:80/upload'; // URL of the server
-const downloadUrl = 'http://localhost:80/download'; // URL of the server
+const uploadUrl = 'https://localhost:443/upload'; // URL of the server
+const downloadUrl = 'https://localhost:443/download'; // URL of the server
 const fileSize = 1024 * 1024; // Size of the file in bytes (1 MB)
 const durationSeconds = 15; // Duration of the test in seconds
 
