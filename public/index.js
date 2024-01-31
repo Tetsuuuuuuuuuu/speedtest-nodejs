@@ -63,8 +63,8 @@ var uploadElement;
 
 
 document.addEventListener("DOMContentLoaded", (event) => {
-    const downloadElement = document.getElementById('download');
-    const uploadElement = document.getElementById('upload');
+    downloadElement = document.getElementById('download');
+    uploadElement = document.getElementById('upload');
 
     document.getElementById('startMeasure').addEventListener('click', () => {
         
