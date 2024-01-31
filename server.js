@@ -5,6 +5,7 @@ const crypto = require('crypto');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
+const cors = require('cors'); // Import the CORS middleware
 
 const app = express();
 const randomData = crypto.randomBytes(1024 * 1024); // This is a block of 1MiB random data
@@ -15,6 +16,9 @@ var certificate = null;
 app.use('/.well-known', express.static(path.join(__dirname, ".well-known")))
 app.use('/public', express.static(path.join(__dirname, "public")))
 app.set("view engine", "ejs")
+
+// Enable CORS for all routes
+app.use(cors());
 
 // Parses command line arguments
 let args = process.argv;
