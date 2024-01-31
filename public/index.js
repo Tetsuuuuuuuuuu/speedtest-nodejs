@@ -2,7 +2,7 @@
 
 
 document.addEventListener("DOMContentLoaded", (event) => {
-    document.getElementById('startButton').addEventListener('click', () => {
+    document.getElementById('startMeasure').addEventListener('click', () => {
         // Function to test download speed
         function testDownloadSpeed() {
             const startTime = performance.now();
