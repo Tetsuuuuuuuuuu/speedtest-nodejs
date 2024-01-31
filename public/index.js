@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
         const uploadElement = document.getElementById('upload');
       
       const totalTime = 10 * 1000; // Total time in milliseconds
-      const interval = 500; // Interval between tests in milliseconds
+      const interval = 1000; // Interval between tests in milliseconds
       const numTests = Math.ceil(totalTime / interval); // Number of tests to perform
       let downloadSpeedSum = 0;
       let uploadSpeedSum = 0;
