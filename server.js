@@ -14,12 +14,12 @@ app.use('/.well-known', express.static(path.join(__dirname, ".well-known")))
 
 // Set the host and port if supplied
 let args = process.argv;
-let host, path, port;
+let host, _path, port;
 args.forEach((arg, index) => {
   if (arg === '--server-ip' && index < args.length - 1) {
     host = args[index + 1];
   } else if (arg === '--server-path' && index < args.length - 1) {
-    path = args[index + 1];
+    _path = args[index + 1];
   } else if (arg === '--server-httpPort' && index < args.length - 1) {
     port = args[index + 1];
   }else if (arg === '--server-httpsPort' && index < args.length - 1) {
@@ -37,12 +37,12 @@ if (!httpPort) {
 if (!httpsPort) {
   port = 443;
 }
-if (!path) {
-  path = '*';
+if (!_path) {
+  _path = '*';
 }
 
 // Sends random data to client
-app.get(path, (req, res) => {
+app.get(_path, (req, res) => {
   console.log("Sending data...");
   let baseTime = new Date().getTime();
 
@@ -83,9 +83,9 @@ app.post('*', (req, res) => {
 
 // Creates a HTTP & a HTTPS web server with the specified options
 http.createServer(app).listen(httpPort, host, () => {
-  console.log('Hosting speedtest server on port ' + port + ', host ' + host + ', and path ' + path);
+  console.log('Hosting speedtest server on port ' + port + ', host ' + host + ', and path ' + _path);
 });
 
 https.createServer({key: privateKey, cert: certificate}, app).listen(httpsPort, host, () => {
-  console.log('Hosting speedtest server on port ' + port + ', host ' + host + ', and path ' + path);
+  console.log('Hosting speedtest server on port ' + port + ', host ' + host + ', and path ' + _path);
 });
