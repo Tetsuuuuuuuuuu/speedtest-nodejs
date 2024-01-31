@@ -6,24 +6,23 @@ const path = require('path');
 const app = express();
 const randomData = crypto.randomBytes(1024 * 1024); // This is a block of 1MiB random data
 const fs = require("fs")
-
-var privateKey = fs.readFileSync("ssl/key.pem");
-var certificate = fs.readFileSync("ssl/cert.pem");
+var privateKey = null
+var certificate = null
 
 app.use('/.well-known', express.static(path.join(__dirname, ".well-known")))
 
 // Set the host and port if supplied
 let args = process.argv;
-let host, _path, port;
+let host, _path, httpPort, httpsPort;
 args.forEach((arg, index) => {
   if (arg === '--server-ip' && index < args.length - 1) {
     host = args[index + 1];
   } else if (arg === '--server-path' && index < args.length - 1) {
     _path = args[index + 1];
   } else if (arg === '--server-httpPort' && index < args.length - 1) {
-    port = args[index + 1];
+    httpPort = args[index + 1];
   }else if (arg === '--server-httpsPort' && index < args.length - 1) {
-    port = args[index + 1];
+    httpsPort = args[index + 1];
   }
 });
 
@@ -32,10 +31,11 @@ if (!host) {
   host = '0.0.0.0';
 }
 if (!httpPort) {
-  port = 80;
+  httpPort = 80;
 }
-if (!httpsPort) {
-  port = 443;
+if (httpsPort) {
+  privateKey = fs.readFileSync("ssl/key.pem");
+  certificate = fs.readFileSync("ssl/cert.pem");
 }
 if (!_path) {
   _path = '*';
@@ -83,9 +83,13 @@ app.post('*', (req, res) => {
 
 // Creates a HTTP & a HTTPS web server with the specified options
 http.createServer(app).listen(httpPort, host, () => {
-  console.log('Hosting speedtest server on port ' + port + ', host ' + host + ', and path ' + _path);
+  console.log('Hosting speedtest server on httpsPort ' + httpPort + ', host ' + host + ', and path ' + _path);
 });
 
+if (privateKey == null || certificate == null) {
+  return;
+}
+
 https.createServer({key: privateKey, cert: certificate}, app).listen(httpsPort, host, () => {
-  console.log('Hosting speedtest server on port ' + port + ', host ' + host + ', and path ' + _path);
+  console.log('Hosting speedtest server on httpsPort ' + httpsPort + ', host ' + host + ', and path ' + _path);
 });
