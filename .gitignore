@@ -65,4 +65,8 @@ typings/
 # dotenv environment variables file
 .env
 
+# HTTPS keys
+ssl/*.pem
 
+# Ignore .well-known directory
+.well-known

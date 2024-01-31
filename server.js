@@ -1,8 +1,16 @@
 const express = require('express');
 const http = require('http');
+const https = require('https');
 const crypto = require('crypto');
+const path = require('path');
 const app = express();
 const randomData = crypto.randomBytes(1024 * 1024); // This is a block of 1MiB random data
+const fs = require("fs")
+
+var privateKey = fs.readFileSync("ssl/key.pem");
+var certificate = fs.readFileSync("ssl/cert.pem");
+
+app.use('/.well-known', express.static(path.join(__dirname, ".well-known")))
 
 // Set the host and port if supplied
 let args = process.argv;
@@ -12,7 +20,9 @@ args.forEach((arg, index) => {
     host = args[index + 1];
   } else if (arg === '--server-path' && index < args.length - 1) {
     path = args[index + 1];
-  } else if (arg === '--server-port' && index < args.length - 1) {
+  } else if (arg === '--server-httpPort' && index < args.length - 1) {
+    port = args[index + 1];
+  }else if (arg === '--server-httpsPort' && index < args.length - 1) {
     port = args[index + 1];
   }
 });
@@ -21,8 +31,11 @@ args.forEach((arg, index) => {
 if (!host) {
   host = '0.0.0.0';
 }
-if (!port) {
-  port = 3000;
+if (!httpPort) {
+  port = 80;
+}
+if (!httpsPort) {
+  port = 443;
 }
 if (!path) {
   path = '*';
@@ -68,7 +81,11 @@ app.post('*', (req, res) => {
   })
 });
 
-// Creates a web server with the specified options
-http.createServer(app).listen(port, host, () => {
+// Creates a HTTP & a HTTPS web server with the specified options
+http.createServer(app).listen(httpPort, host, () => {
+  console.log('Hosting speedtest server on port ' + port + ', host ' + host + ', and path ' + path);
+});
+
+https.createServer({key: privateKey, cert: certificate}, app).listen(httpsPort, host, () => {
   console.log('Hosting speedtest server on port ' + port + ', host ' + host + ', and path ' + path);
 });
