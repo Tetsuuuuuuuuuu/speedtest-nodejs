@@ -1,6 +1,5 @@
-document.addEventListener("DOMContentLoaded", (event) => {
-    document.getElementById('startMeasure').addEventListener('click', () => {
-        const downloadElement = document.getElementById('download');
+
+const downloadElement = document.getElementById('download');
         const uploadElement = document.getElementById('upload');
       
       const totalTime = 15 * 1000; // Total time in milliseconds
@@ -23,11 +22,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
             const downloadSpeed = fileSizeMB / downloadTime; // MB/s
             downloadSpeedSum += downloadSpeed;
             testsCompleted++;
-            if (testsCompleted === numTests) {
-                setTimeout(() => {
-              showResults();
-                }, 5000);
-            }
           })
           .catch(error => {
             console.error('Error during download:', error);
@@ -70,6 +64,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
         uploadElement.innerText = `${avgUploadSpeed.toFixed(2)} MB/s`;
       }
 
+
+document.addEventListener("DOMContentLoaded", (event) => {
+    document.getElementById('startMeasure').addEventListener('click', () => {
+        
       // Start tests at intervals
       for (let i = 0; i < numTests; i++) {
         setTimeout(() => {
