@@ -49,6 +49,12 @@ if (httpsPort) {
   certificate = fs.readFileSync(certificatePath);
 }
 
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 // Render index page
 app.get("/", (req, res) => {
   res.render("index.ejs")
