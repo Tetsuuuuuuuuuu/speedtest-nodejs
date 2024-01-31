@@ -46,7 +46,7 @@ function measureSpeed(url, size, durationSeconds, type) {
 const uploadUrl = 'https://speedtest.peer2.live/upload'; // URL of the server
 const downloadUrl = 'https://speedtest.peer2.live/download'; // URL of the server
 const fileSize = 1024 * 1024; // Size of the file in bytes (1 MB)
-const durationSeconds = 15; // Duration of the test in seconds
+const durationSeconds = 15000; // Duration of the test in seconds
 
 document.addEventListener("DOMContentLoaded", (event) => {
     document.getElementById("startMeasure").addEventListener("click", function(ev) {
