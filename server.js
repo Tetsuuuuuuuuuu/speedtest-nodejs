@@ -3,13 +3,18 @@ const http = require('http');
 const https = require('https');
 const crypto = require('crypto');
 const path = require('path');
+const fs = require('fs');
+const multer = require('multer');
+
 const app = express();
 const randomData = crypto.randomBytes(1024 * 1024); // This is a block of 1MiB random data
-const fs = require("fs")
-var privateKey = null
-var certificate = null
+
+var privateKey = null;
+var certificate = null;
 
 app.use('/.well-known', express.static(path.join(__dirname, ".well-known")))
+app.use('/public', express.static(path.join(__dirname, "public")))
+app.set("view engine", "ejs")
 
 // Parses command line arguments
 let args = process.argv;
@@ -19,11 +24,11 @@ args.forEach((arg, index) => {
     host = args[index + 1];
   } else if (arg === '--server-httpPort' && index < args.length - 1) {
     httpPort = args[index + 1];
-  }else if (arg === '--server-httpsPort' && index < args.length - 1) {
+  } else if (arg === '--server-httpsPort' && index < args.length - 1) {
     httpsPort = args[index + 1];
-  }else if (arg === '--server-privateKey' && index < args.length - 1) {
+  } else if (arg === '--server-privateKey' && index < args.length - 1) {
     privateKeyPath = args[index + 1];
-  }else if (arg === '--server-certificate' && index < args.length - 1) {
+  } else if (arg === '--server-certificate' && index < args.length - 1) {
     certificatePath = args[index + 1];
   }
 });
@@ -40,55 +45,48 @@ if (httpsPort) {
   certificate = fs.readFileSync(certificatePath);
 }
 
-// Sends random data to client
+// Render index page
 app.get("/", (req, res) => {
-  console.log("Sending data...");
-  let baseTime = new Date().getTime();
-
-  // Sends up to 100MiB or for 15 seconds, whichever comes first.
-  for (let i = 0; i < 100; i++) {
-    let currentTime = new Date().getTime();
-    if (currentTime - baseTime > 15000) {
-      console.log('15s elapsed');
-      break;
-    }
-    res.write(randomData);
-  }
-  console.log('Finished sending data');
-  res.end();
+  res.render("index.ejs")
 });
 
-// Receives uploaded data from client
-app.post('/', (req, res) => {
-  console.log('Receiving data...');
-  let baseTime = new Date().getTime();
-  let dataSize = 0;
+// Endpoint to download the test file
+app.get("/download", (req, res) => {
+  const fileSize = randomData.length;
 
-  // Each time data is received, report the number of bits each second
-  req.on('data', (data) => {
-    dataSize += data.length;
-    let currentTime = new Date().getTime();
-    if (currentTime - baseTime > 1000) {
-      console.log('Received ' + (dataSize * 8) + ' bits');
-    }
+  res.writeHead(200, {
+    'Content-Type': 'application/octet-stream',
+    'Content-Length': fileSize
   });
 
-  // When all data is received, log it and close the connection;
-  req.on('end', () => {
-    console.log('Received ' + (dataSize * 8) + ' bits');
-    res.sendStatus(200);
-  })
+  // Create a readable stream from the random data
+  const stream = require('stream');
+  const readable = new stream.Readable();
+  readable.push(randomData);
+  readable.push(null); // Signal the end of the stream
+
+  // Pipe the data to the response
+  readable.pipe(res);
+});
+
+// Multer configuration for file upload
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+// Endpoint to handle file uploads
+app.post('/upload', upload.single('file'), (req, res) => {
+  const fileSize = req.file ? req.file.size : 0; // Get file size from the uploaded file
+
+  res.status(200).send({ fileSize });
 });
 
 // Creates a HTTP & a HTTPS web server with the specified options
 http.createServer(app).listen(httpPort, host, () => {
-  console.log('Hosting speedtest server on httpsPort ' + httpPort + ', host ' + host + ', and path ' + _path);
+  console.log('Hosting speedtest server on httpPort ' + httpPort + ', host ' + host);
 });
 
-if (privateKey == null || certificate == null) {
-  return;
+if (privateKey && certificate) {
+  https.createServer({ key: privateKey, cert: certificate }, app).listen(httpsPort, host, () => {
+    console.log('Hosting speedtest server on httpsPort ' + httpsPort + ', host ' + host);
+  });
 }
-
-https.createServer({key: privateKey, cert: certificate}, app).listen(httpsPort, host, () => {
-  console.log('Hosting speedtest server on httpsPort ' + httpsPort + ', host ' + host + ', and path ' + _path);
-});
