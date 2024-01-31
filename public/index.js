@@ -15,6 +15,8 @@ function measureSpeed(url, size, durationSeconds, type) {
             const currentTime = performance.now();
             const elapsedTime = (currentTime - startTime) / 1000; // Convert to seconds
 
+            console.log(`${type} speed: ${bytesTransferred / elapsedTime / (1024 * 1024)} Mbps`);
+
             if (elapsedTime >= durationSeconds) {
                 xhr.abort(); // Stop the request if duration exceeded
                 const speed = (bytesTransferred / elapsedTime / (1024 * 1024)).toFixed(2); // Calculate speed in Mbps
