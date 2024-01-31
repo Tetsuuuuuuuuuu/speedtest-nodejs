@@ -1,6 +1,6 @@
 
-const downloadElement = document.getElementById('download');
-        const uploadElement = document.getElementById('upload');
+var downloadElement;
+var uploadElement;
       
       const totalTime = 15 * 1000; // Total time in milliseconds
       const interval = 2000; // Interval between tests in milliseconds
@@ -47,9 +47,6 @@ const downloadElement = document.getElementById('download');
             const uploadSpeed = uploadSizeMB / uploadTime; // MB/s
             uploadSpeedSum += uploadSpeed;
             testsCompleted++;
-            if (testsCompleted === numTests) {
-              showResults();
-            }
           })
           .catch(error => {
             console.error('Error during upload:', error);
@@ -66,6 +63,9 @@ const downloadElement = document.getElementById('download');
 
 
 document.addEventListener("DOMContentLoaded", (event) => {
+    const downloadElement = document.getElementById('download');
+    const uploadElement = document.getElementById('upload');
+
     document.getElementById('startMeasure').addEventListener('click', () => {
         
       // Start tests at intervals
