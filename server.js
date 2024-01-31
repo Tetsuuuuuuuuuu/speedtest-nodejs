@@ -62,7 +62,7 @@ app.get("/", (req, res) => {
 
 // Endpoint to download the test file
 app.get("/download", (req, res) => {
-  const fileSize = randomData.length;
+  const fileSize = randomData.length * 100; // 100mb
 
   res.writeHead(200, {
     'Content-Type': 'application/octet-stream',
