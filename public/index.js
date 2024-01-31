@@ -15,9 +15,7 @@ function measureSpeed(url, size, durationSeconds, type) {
             const currentTime = performance.now();
             const elapsedTime = (currentTime - startTime) / 1000; // Convert to seconds
 
-            //console.log(`${type} speed: ${bytesTransferred / elapsedTime / (1024 * 1024)} Mbps`);
-
-            /*if (elapsedTime >= durationSeconds) {
+            if (elapsedTime >= durationSeconds) {
                 xhr.abort(); // Stop the request if duration exceeded
                 const speed = (bytesTransferred / elapsedTime / (1024 * 1024)).toFixed(2); // Calculate speed in Mbps
                 resolve(speed);
@@ -25,11 +23,7 @@ function measureSpeed(url, size, durationSeconds, type) {
                 const speed = (bytesTransferred / elapsedTime / (1024 * 1024)).toFixed(2); // Calculate speed in Mbps
                 console.log(`${type} speed!: ${speed} Mbps`);
                 document.getElementById(type).innerText = `${speed} Mbps`;
-            }*/
-
-            const speed = (bytesTransferred / elapsedTime / (1024 * 1024)).toFixed(2); // Calculate speed in Mbps
-            console.log(`${type} speed!: ${speed} Mbps`);
-            document.getElementById(type).innerText = `${speed} Mbps`;
+            }
         };
 
         xhr.onload = function() {
@@ -52,7 +46,7 @@ function measureSpeed(url, size, durationSeconds, type) {
 const uploadUrl = 'https://speedtest.peer2.live/upload'; // URL of the server
 const downloadUrl = 'https://speedtest.peer2.live/download'; // URL of the server
 const fileSize = (1024 * 1024) * 100; // Size of the file in bytes (100 MB)
-const durationSeconds = 15000; // Duration of the test in seconds
+const durationSeconds = 15; // Duration of the test in seconds
 
 document.addEventListener("DOMContentLoaded", (event) => {
     document.getElementById("startMeasure").addEventListener("click", function(ev) {
