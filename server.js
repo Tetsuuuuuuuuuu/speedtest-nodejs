@@ -53,7 +53,7 @@ app.get("/", (req, res) => {
 // Implement Download and Upload routes
 
 // Download route
-app.get('/download', (req, res) => {
+app.get('/download', async (req, res) => {
     try {
         // Sets the headers for the download
         res.setHeader('Content-Type', 'application/octet-stream');
@@ -73,6 +73,8 @@ app.get('/download', (req, res) => {
             }
 
             res.write(randomData);
+
+            await new Promise(resolve => setTimeout(resolve, 100));
         }
 
         console.log('Finished sending data');
