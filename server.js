@@ -54,17 +54,36 @@ app.get("/", (req, res) => {
 
 // Download route
 app.get('/download', (req, res) => {
-    let data = crypto.randomBytes(1024 * 1024);
-
+    const fileSize = 100 * 1024 * 1024; // 100MB in bytes
+    const buffer = Buffer.alloc(1024 * 1024); // 1MB buffer size
+    let remaining = fileSize;
+    
     res.setHeader('Content-Type', 'application/octet-stream');
     res.setHeader('Content-Disposition', 'attachment; filename=random.bin');
-    res.setHeader('Content-Length', data.length);
+    res.setHeader('Content-Length', fileSize);
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');
+    
+    // Create a function to send the data in chunks
+    const sendData = () => {
+        if (remaining <= 0) {
+            res.end();
+            return;
+        }
 
-    res.send(data);
+        const chunkSize = Math.min(remaining, buffer.length);
+        res.write(buffer.slice(0, chunkSize));
+        remaining -= chunkSize;
+
+        // Schedule sending the next chunk
+        setImmediate(sendData);
+    };
+
+    // Start sending data
+    sendData();
 });
+
 
 
 // Upload route
