@@ -30,6 +30,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 let end = new Date().getTime();
                 let time = end - start;
 
+                setInterval(() => {
+                    console.log(response.blob())
+                }, 1000);
+
                 // This downloaded 1 MebiByte (1024)
 
                 totalMebiDownloaded += 1;
@@ -37,7 +41,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
                 console.log(`Downloaded 1 MebiByte in ${time} ms`);
 
-                console.log(response.blob())
+               
                 
             });
 
