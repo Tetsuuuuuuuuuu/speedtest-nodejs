@@ -16,8 +16,8 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 
 // Rate limiting
 app.use(rateLimit({
-    windowMs: 1 * 60 * 1000,
-    max: 50
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 50 // 50 requests per minute
 }));
 
 // Favicon route
