@@ -4,6 +4,7 @@ const https = require('https');
 const crypto = require('crypto');
 const path = require('path');
 const fs = require('fs');
+const multer = require('multer');
 
 const app = express();
 const randomData = crypto.randomBytes(1024 * 1024); // This is a block of 1MiB random data
