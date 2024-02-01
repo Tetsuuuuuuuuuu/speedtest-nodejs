@@ -6,7 +6,7 @@
 
 <h2>What is this</h2>
 
-<a href="https://speedtest.peer2.live">Live Demo</a>
+<a href="https://speedtest.peer2.live">Live Demo</a> (Measures download and upload speeds up to 1 GB)
 
 Screenshot:<br><br>
 <img width="300" src="https://github.com/Tetsuuuuuuuuuu/speedtest-nodejs-website/assets/72413576/f416d4d1-32d8-4f4b-ab56-7a1e0e615e09">
