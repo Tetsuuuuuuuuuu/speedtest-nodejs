@@ -11,21 +11,33 @@ document.addEventListener("DOMContentLoaded", (event) => {
     uploadElement = document.getElementById('upload');
 
     document.getElementById('startMeasure').addEventListener('click', async () => {
-        let downloadSpeeds = [];
+        let totalBytesDownloaded = 0;
+        let totalTime = 0;
         
         for (let i = 0; i < amountDownloadTests; i++) {
             let start = new Date().getTime();
 
             await fetch('/download', {
                 method: 'GET'
-            }).then((response) => {
+            }).then(async (response) => {
                 let end = new Date().getTime();
                 let time = end - start;
-
-                // this is what we downloaded: crypto.randomBytes(10 * (1024 * 1024))
-
-                let speed = (10 * (1024 * 1024)) / time;
-                console.log(`Download speed: ${speed} MB/s`);
+        
+                // Measure the size of the downloaded response
+                let contentLength = parseInt(response.headers.get('Content-Length'));
+                totalBytesDownloaded += contentLength;
+        
+                totalTime += time;
+        
+                let speed = contentLength / (time / 1000); // Calculate speed in bytes per second
+                // Convert speed to a more human-readable format
+                let speedInKbps = speed / 1024; // Convert bytes per second to kilobytes per second
+                console.log(`Download speed: ${speedInKbps.toFixed(2)} KB/s`);
+        
+                // Optionally, you can also calculate and log the average speed across all tests
+                let averageSpeed = totalBytesDownloaded / (totalTime / 1000);
+                let averageSpeedInKbps = averageSpeed / 1024;
+                console.log(`Average download speed: ${averageSpeedInKbps.toFixed(2)} KB/s`);
             });
         }
 
