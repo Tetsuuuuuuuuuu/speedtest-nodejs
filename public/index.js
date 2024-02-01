@@ -30,15 +30,13 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 let end = new Date().getTime();
                 let time = end - start;
 
-                console.log(response.body);
+                // get the data from the response body
+                let data = await response.arrayBuffer();
+                let size = data.byteLength;
 
-                // This downloaded 1 MebiByte (1024)
-
-                totalMebiDownloaded += 1;
-                totalTime += time;
-
-                console.log(`Downloaded 1 MebiByte in ${time} ms`);
-
+                let speed = size / time; // bytes per millisecond
+                
+                console.log(`Download speed: ${speed} bytes/ms`);
                
                 
             });
