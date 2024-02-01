@@ -15,6 +15,19 @@ app.use('/.well-known', express.static(path.join(__dirname, ".well-known")))
 app.use('/public', express.static(path.join(__dirname, "public")))
 app.set("view engine", "ejs")
 
+// Configure storage for uploaded files
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads/');
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname);
+    }
+});
+
+// Create multer instance
+const upload = multer({ storage: storage });
+
 // Parses command line arguments
 let args = process.argv;
 let host, httpPort, httpsPort, privateKeyPath, certificatePath;
@@ -87,11 +100,9 @@ app.get('/download', async (req, res) => {
     }
 });
 
-
-
 // Upload route
-app.post('/upload', (req, res) => {
-
+app.post('/upload', upload.single('file'), (req, res) => {
+    res.send('File uploaded successfully');
 });
 
 // Creates a HTTP & a HTTPS web server with the specified options
