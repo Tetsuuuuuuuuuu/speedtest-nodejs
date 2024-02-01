@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     uploadElement = document.getElementById('upload');
 
     document.getElementById('startMeasure').addEventListener('click', async () => {
-        let totalBytesDownloaded = 0;
+        let totalMebiDownloaded = 0;
         let totalTime = 0;
 
         for (let i = 0; i < amountDownloadTests; i++) {
@@ -30,23 +30,15 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 let end = new Date().getTime();
                 let time = end - start;
 
-                // Measure the size of the downloaded response
-                let contentLength = parseInt(response.headers.get('Content-Length'));
-                totalBytesDownloaded += contentLength;
+                // This downloaded 1 MebiByte (1024)
 
+                totalMebiDownloaded += 1;
                 totalTime += time;
 
-                let speed = contentLength / (time / 1000); // Calculate speed in bytes per second
-                // Convert speed to megabytes per second
-                let speedInMBps = (speed / 1024) / 1024; // Convert bytes per second to megabytes per second
-                console.log(`Download speed: ${speedInMBps.toFixed(2)} MB/s`);
+                let speed = (1 / (time / 1000)) / 1024;
 
-                // Optionally, you can also calculate and log the average speed across all tests
-                let averageSpeed = totalBytesDownloaded / (totalTime / 1000);
-                let averageSpeedInMBps = (averageSpeed / 1024) / 1024; // Convert bytes per second to megabytes per second
-                console.log(`Average download speed: ${averageSpeedInMBps.toFixed(2)} MB/s`);
-
-                showDownloadSpeed(averageSpeedInMBps);
+                showDownloadSpeed(speed);
+                
             });
 
             await new Promise((resolve) => {
