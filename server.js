@@ -90,7 +90,6 @@ app.get('/download', async (req, res) => {
         res.setHeader('Content-Disposition', 'attachment; filename=download.bin');
         res.setHeader('Cache-Control', 'no-cache');
 
-        console.log("Sending data...");
         let baseTime = new Date().getTime();
 
         // Sends up to 100MiB or for 15 seconds, whichever comes first.
