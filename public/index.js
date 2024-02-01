@@ -34,9 +34,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 let data = await response.arrayBuffer();
                 let size = data.byteLength;
 
+                console.log(`Downloaded ${size} bytes in ${time} ms`);
+                console.log(`Data: ${data}`);
+
                 let speed = size / time; // bytes per millisecond
                 
-                console.log(`Download speed: ${speed} bytes/ms`);
+                speed = speed / 1024 / 1024 * 1000;
+
+                console.log(`Download speed: ${speed} MB/s`);
                
                 
             });
