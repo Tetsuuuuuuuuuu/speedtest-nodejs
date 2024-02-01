@@ -5,6 +5,8 @@ const crypto = require('crypto');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
+const rateLimit = require('express-rate-limit');
+
 
 const app = express();
 const randomData = crypto.randomBytes(1024 * 1024); // This is a block of 1MiB random data
@@ -14,10 +16,12 @@ var certificate = null;
 
 app.use('/.well-known', express.static(path.join(__dirname, ".well-known")))
 app.use('/public', express.static(path.join(__dirname, "public")))
+app.use(rateLimit({
+    windowMs: 1 * 60 * 1000,
+    max: 50
+}));
 
-// allow acces to /favicon.ico without error
 app.get('/favicon.ico', (req, res) => res.sendFile(path.join(__dirname, 'public', 'favicon.ico')));
-
 app.set("view engine", "ejs")
 
 // Configure storage for uploaded files
@@ -62,6 +66,22 @@ if (httpsPort) {
     privateKey = fs.readFileSync(privateKeyPath);
     certificate = fs.readFileSync(certificatePath);
 }
+
+function isRateLimited(req) {
+    if (req.rateLimit.remaining === 0) {
+        return true;
+    }
+    return false;
+}
+
+app.use((req, res, next) => { 
+    if (isRateLimited(req)) {
+        return res.status(429).send('Too many requests, please try again later.');
+    }
+    
+    next();
+});
+
 
 // Render index page
 app.get("/", (req, res) => {
