@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
             await new Promise((resolve) => {
                 setTimeout(() => {
                     resolve();
-                }, 3000);
+                }, 2000);
             });
         }
 
