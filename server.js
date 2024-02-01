@@ -83,31 +83,38 @@ app.get('/', (req, res) => {
 });
 
 // Download route
-app.get('/download', (req, res) => {
-    res.setHeader('Content-Type', 'application/octet-stream');
-    res.setHeader('Content-Disposition', 'attachment; filename=download.bin');
-    res.setHeader('Cache-Control', 'no-cache');
+app.get('/download', async (req, res) => {
+    try {
+        // Sets the headers for the download
+        res.setHeader('Content-Type', 'application/octet-stream');
+        res.setHeader('Content-Disposition', 'attachment; filename=download.bin');
+        res.setHeader('Cache-Control', 'no-cache');
 
-    const baseTime = new Date().getTime();
+        console.log("Sending data...");
+        let baseTime = new Date().getTime();
 
-    const sendFile = () => {
+        // Sends up to 100MiB or for 15 seconds, whichever comes first.
         for (let i = 0; i < 100; i++) {
-            const currentTime = new Date().getTime();
+            let currentTime = new Date().getTime();
+
             if (currentTime - baseTime > 15000) {
+                console.log('15s elapsed');
                 break;
             }
+
             res.write(randomData);
+
+            await new Promise(resolve => {
+                res.once('drain', resolve);
+            });
         }
 
+        console.log('Finished sending data');
         res.end();
-    };
-
-    res.on('error', (err) => {
-        console.error(err);
-        res.status(500).send('Internal Server Error');
-    });
-
-    sendFile();
+    }
+    catch (e) {
+        console.log(e);
+    }
 });
 
 
