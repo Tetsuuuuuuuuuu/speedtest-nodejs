@@ -39,6 +39,11 @@ document.addEventListener("DOMContentLoaded", async (event) => {
 
             // Continue reading the next chunk
             readChunk();
+
+            // show current download speed
+            const timeElapsed = (performance.now() - start) / 1000;
+            const downloadSpeedMbps = (totalBytes * 8) / (timeElapsed * 1024 * 1024);
+            downloadElement.innerHTML = `${downloadSpeedMbps.toFixed(2)} Mbps`;
         };
 
         // Start reading the chunks
