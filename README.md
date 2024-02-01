@@ -8,6 +8,11 @@
 
 <a href="https://speedtest.peer2.live">Live Demo</a>
 
+Screenshot:<br><br>
+<img width="300" src="https://github.com/Tetsuuuuuuuuuu/speedtest-nodejs-website/assets/72413576/f416d4d1-32d8-4f4b-ab56-7a1e0e615e09">
+
+
+
 This project allows anyone to setup his own http and https speedtesting Website quick and simple.
 
 <h2>Installation</h2>
@@ -43,6 +48,8 @@ Once all of the data is uploaded, the client will determine the estimated
 upload speed.
 
 The standard rate limit is 50 requests per minute.
+
+The footer elements are editable in the index.html, set the urls of them as u need it or remove unused ones.
 
 <h2>Customization</h2>
 <ul>
