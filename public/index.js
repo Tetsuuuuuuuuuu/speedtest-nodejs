@@ -12,13 +12,13 @@ document.addEventListener("DOMContentLoaded", (event) => {
     downloadElement = document.getElementById('download');
     uploadElement = document.getElementById('upload');
 
-    document.getElementById('startMeasure').addEventListener('click', () => {
+    document.getElementById('startMeasure').addEventListener('click', async () => {
         // Use Path /download which sends 10MB of random data to download the data and measure the time and then divide totalDownloadTime by amountDownloadTests to get the average time
 
         for (let i = 0; i < amountDownloadTests; i++) {
             let start = new Date().getTime();
 
-            fetch('/download', {
+            await fetch('/download', {
                 method: 'GET'
             }).then((response) => {
                 let end = new Date().getTime();
