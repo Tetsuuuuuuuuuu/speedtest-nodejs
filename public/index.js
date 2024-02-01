@@ -24,7 +24,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 let end = new Date().getTime();
                 let time = end - start;
                 downloadResults.push(time);
-                downloadElement.innerHTML = time + 'ms';
             });
         }
 
