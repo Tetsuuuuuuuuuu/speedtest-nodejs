@@ -16,7 +16,7 @@ app.use('/.well-known', express.static(path.join(__dirname, ".well-known")))
 app.use('/public', express.static(path.join(__dirname, "public")))
 
 // allow acces to /favicon.ico without error
-app.get('/favicon.ico', (req, res) => res.sendFile("public/favicon.ico"));
+app.get('/favicon.ico', (req, res) => res.sendFile(path.join(__dirname, 'public', 'favicon.ico')));
 
 app.set("view engine", "ejs")
 
