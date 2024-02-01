@@ -54,12 +54,10 @@ app.get("/", (req, res) => {
 
 // Download route
 app.get('/download', (req, res) => {   
+    // Sets the headers for the download
     res.setHeader('Content-Type', 'application/octet-stream');
-    res.setHeader('Content-Disposition', 'attachment; filename=random.bin');
-    res.setHeader('Content-Length', randomData.length);
+    res.setHeader('Content-Disposition', 'attachment; filename=download.bin');
     res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Pragma', 'no-cache');
-    res.setHeader('Expires', '0');
     
     console.log("Sending data...");
     let baseTime = new Date().getTime();
