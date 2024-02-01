@@ -56,7 +56,7 @@ app.get("/", (req, res) => {
 app.get('/download', (req, res) => {   
     res.setHeader('Content-Type', 'application/octet-stream');
     res.setHeader('Content-Disposition', 'attachment; filename=random.bin');
-    res.setHeader('Content-Length', fileSize);
+    res.setHeader('Content-Length', randomData.length);
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');
@@ -67,7 +67,7 @@ app.get('/download', (req, res) => {
     // Sends up to 100MiB or for 15 seconds, whichever comes first.
     for (let i = 0; i < 100; i++) {
         let currentTime = new Date().getTime();
-        
+
         if (currentTime - baseTime > 15000) {
             console.log('15s elapsed');
             break;
