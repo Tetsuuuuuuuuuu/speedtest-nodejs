@@ -31,11 +31,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 let time = (end - start) / 1000; // Convert milliseconds to seconds
 
                 // Get the size from the response headers
-                let size = response.headers.get('Content-Length');
-                console.log(size);
-                
-                // Assuming 1 MB = 1048576 bytes
-                let downloadedSizeInBytes = 1048576; // 1MB in bytes
+                let downloadedSizeInBytes = response.headers.get('Content-Length');
                 
                 let downloadSpeed = downloadedSizeInBytes / time;
 
