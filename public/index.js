@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 let averageSpeedInMBps = (averageSpeed / 1024) / 1024; // Convert bytes per second to megabytes per second
                 console.log(`Average download speed: ${averageSpeedInMBps.toFixed(2)} MB/s`);
 
-                showDownloadSpeed(averageSpeedInMBps.toFixed(2) + "MB/s");
+                showDownloadSpeed(averageSpeedInMBps);
             });
 
             await new Promise((resolve) => {
