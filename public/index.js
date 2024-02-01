@@ -11,6 +11,38 @@ function generateRandomData(sizeInMB) {
     return new Blob([buffer], { type: 'application/octet-stream' });
 }
 
+async function startTestUpload() {
+    const dataSizeMB = 10; // Size of data to generate in megabytes
+    const data = generateRandomData(dataSizeMB);
+    const formData = new FormData();
+    formData.append('file', data, 'random_data.bin');
+
+    const uploadStart = performance.now();
+
+    try {
+        const response = await fetch('/upload', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (response.ok) {
+            const end = performance.now();
+            const timeInSeconds = (end - uploadStart) / 1000;
+            const uploadSpeedMbps = (dataSizeMB * 8) / timeInSeconds;
+            
+            console.log('File uploaded successfully');
+            console.log(`Upload speed: ${uploadSpeedMbps.toFixed(2)} Mbps`);
+            // Handle success
+        } else {
+            console.error('Upload failed');
+            // Handle failure
+        }
+    } catch (error) {
+        console.error('Error uploading file:', error);
+        // Handle error
+    }
+}
+
 document.addEventListener("DOMContentLoaded", async (event) => {
     downloadElement = document.getElementById('download');
     uploadElement = document.getElementById('upload');
@@ -35,6 +67,9 @@ document.addEventListener("DOMContentLoaded", async (event) => {
                 const downloadSpeedMbps = (totalBytes * 8) / (timeInSeconds * 1024 * 1024);
                 
                 downloadElement.innerHTML = `${downloadSpeedMbps.toFixed(2)} Mbps`;
+
+                startTestUpload();
+                
                 return;
             }
 
@@ -52,38 +87,5 @@ document.addEventListener("DOMContentLoaded", async (event) => {
 
         // Start reading the chunks
         readChunk();
-
-        // Wait for all the chunks to be read
-        await Promise.all(chunks);
-
-        const dataSizeMB = 10; // Size of data to generate in megabytes
-        const data = generateRandomData(dataSizeMB);
-        const formData = new FormData();
-        formData.append('file', data, 'random_data.bin');
-
-        const uploadStart = performance.now();
-
-        try {
-            const response = await fetch('/upload', {
-                method: 'POST',
-                body: formData
-            });
-
-            if (response.ok) {
-                const end = performance.now();
-                const timeInSeconds = (end - uploadStart) / 1000;
-                const uploadSpeedMbps = (dataSizeMB * 8) / timeInSeconds;
-                
-                console.log('File uploaded successfully');
-                console.log(`Upload speed: ${uploadSpeedMbps.toFixed(2)} Mbps`);
-                // Handle success
-            } else {
-                console.error('Upload failed');
-                // Handle failure
-            }
-        } catch (error) {
-            console.error('Error uploading file:', error);
-            // Handle error
-        }
     });
 });
