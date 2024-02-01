@@ -22,6 +22,7 @@ var uploadElement;
             const downloadSpeed = fileSizeMB / downloadTime; // MB/s
             downloadSpeedSum += downloadSpeed;
             testsCompleted++;
+            showResults();
           })
           .catch(error => {
             console.error('Error during download:', error);
@@ -47,6 +48,7 @@ var uploadElement;
             const uploadSpeed = uploadSizeMB / uploadTime; // MB/s
             uploadSpeedSum += uploadSpeed;
             testsCompleted++;
+            showResults();
           })
           .catch(error => {
             console.error('Error during upload:', error);
