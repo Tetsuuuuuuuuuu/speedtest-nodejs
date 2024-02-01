@@ -74,7 +74,7 @@ app.get('/download', async (req, res) => {
 
             res.write(randomData);
 
-            //await new Promise(resolve => setTimeout(resolve, 100));
+            await new Promise(resolve => setTimeout(resolve, 10));
         }
 
         console.log('Finished sending data');
