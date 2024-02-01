@@ -5,7 +5,7 @@
 <h5>This is a fork of https://github.com/sloshy/speedtest-nodejs</h5>
 
 <h2>What is this</h2>
-This Project allows anyone to setup his own http and https Speedtesting Website quick and simple.
+This project allows anyone to setup his own http and https speedtesting Website quick and simple.
 
 <h2>Installation</h2>
 Install <a href="https://nodejs.org/en/">[NodeJS 6.9.x]</a> if you haven't already on your machine.
@@ -56,6 +56,8 @@ node server.js --server-privateKey /etc/letsencrypt/live/speedtest.peer2.live/pr
 ```
 
 <h2>Notes</h2>
+
+This is the first time I created such a project, so it is possible this server still has bugs, I am continuesly trying to improve this project. All community improvements are welcomed.
 
 This Project uses:
 <ul>
