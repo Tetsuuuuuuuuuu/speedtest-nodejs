@@ -7,136 +7,125 @@ const fs = require('fs');
 const multer = require('multer');
 const rateLimit = require('express-rate-limit');
 
-
 const app = express();
-const randomData = crypto.randomBytes(1024 * 1024); // This is a block of 1MiB random data
+const randomData = crypto.randomBytes(1024 * 1024); // 1MiB random data
 
-var privateKey = null;
-var certificate = null;
+// Serve static files
+app.use('/.well-known', express.static(path.join(__dirname, '.well-known')));
+app.use('/public', express.static(path.join(__dirname, 'public')));
 
-app.use('/.well-known', express.static(path.join(__dirname, ".well-known")))
-app.use('/public', express.static(path.join(__dirname, "public")))
+// Rate limiting
 app.use(rateLimit({
     windowMs: 1 * 60 * 1000,
     max: 50
 }));
 
+// Favicon route
 app.get('/favicon.ico', (req, res) => res.sendFile(path.join(__dirname, 'public', 'favicon.ico')));
-app.set("view engine", "ejs")
+
+// View engine setup
+app.set('view engine', 'ejs');
 
 // Configure storage for uploaded files
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './uploads/');
-    },
-    filename: function (req, file, cb) {
+    destination: './uploads/',
+    filename: (req, file, cb) => {
         cb(null, file.originalname);
     }
 });
 
 // Create multer instance
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
-// Parses command line arguments
-let args = process.argv;
-let host, httpPort, httpsPort, privateKeyPath, certificatePath;
+// Parse command line arguments
+const args = process.argv.slice(2);
+let host = '0.0.0.0',
+    httpPort = 80,
+    httpsPort,
+    privateKey,
+    certificate;
 
 args.forEach((arg, index) => {
-    if (arg === '--server-ip' && index < args.length - 1) {
-        host = args[index + 1];
-    } else if (arg === '--server-httpPort' && index < args.length - 1) {
-        httpPort = args[index + 1];
-    } else if (arg === '--server-httpsPort' && index < args.length - 1) {
-        httpsPort = args[index + 1];
-    } else if (arg === '--server-privateKey' && index < args.length - 1) {
-        privateKeyPath = args[index + 1];
-    } else if (arg === '--server-certificate' && index < args.length - 1) {
-        certificatePath = args[index + 1];
+    switch (arg) {
+        case '--server-ip':
+            host = args[index + 1] || host;
+            break;
+        case '--server-httpPort':
+            httpPort = args[index + 1] || httpPort;
+            break;
+        case '--server-httpsPort':
+            httpsPort = args[index + 1];
+            break;
+        case '--server-privateKey':
+            privateKey = fs.readFileSync(args[index + 1]);
+            break;
+        case '--server-certificate':
+            certificate = fs.readFileSync(args[index + 1]);
+            break;
     }
 });
 
-// Sets default values for command line arguments
-if (!host) {
-    host = '0.0.0.0';
-}
-if (!httpPort) {
-    httpPort = 80;
-}
-if (httpsPort) {
-    privateKey = fs.readFileSync(privateKeyPath);
-    certificate = fs.readFileSync(certificatePath);
-}
-
+// Rate limit middleware
 function isRateLimited(req) {
-    if (req.rateLimit.remaining === 0) {
-        return true;
-    }
-    return false;
+    return req.rateLimit.remaining === 0;
 }
 
-app.use((req, res, next) => { 
+app.use((req, res, next) => {
     if (isRateLimited(req)) {
         return res.status(429).send('Too many requests, please try again later.');
     }
-    
     next();
 });
 
-
 // Render index page
-app.get("/", (req, res) => {
-    res.render("index.ejs")
+app.get('/', (req, res) => {
+    res.render('index.ejs');
 });
 
-// Implement Download and Upload routes
-
 // Download route
-app.get('/download', async (req, res) => {
-    try {
-        // Sets the headers for the download
-        res.setHeader('Content-Type', 'application/octet-stream');
-        res.setHeader('Content-Disposition', 'attachment; filename=download.bin');
-        res.setHeader('Cache-Control', 'no-cache');
+app.get('/download', (req, res) => {
+    res.setHeader('Content-Type', 'application/octet-stream');
+    res.setHeader('Content-Disposition', 'attachment; filename=download.bin');
+    res.setHeader('Cache-Control', 'no-cache');
 
-        console.log("Sending data...");
-        let baseTime = new Date().getTime();
+    const baseTime = new Date().getTime();
 
-        // Sends up to 100MiB or for 15 seconds, whichever comes first.
+    const sendFile = () => {
         for (let i = 0; i < 100; i++) {
-            let currentTime = new Date().getTime();
-
+            const currentTime = new Date().getTime();
             if (currentTime - baseTime > 15000) {
                 console.log('15s elapsed');
                 break;
             }
-
             res.write(randomData);
-
-            await new Promise(resolve => {
-                res.once('drain', resolve);
-            });
         }
 
         console.log('Finished sending data');
         res.end();
-    }
-    catch (e) {
-        console.log(e);
-    }
+    };
+
+    res.on('error', (err) => {
+        console.error(err);
+        res.status(500).send('Internal Server Error');
+    });
+
+    sendFile();
 });
+
 
 // Upload route
 app.post('/upload', upload.single('file'), (req, res) => {
     res.send('File uploaded successfully');
 });
 
-// Creates a HTTP & a HTTPS web server with the specified options
+// Create HTTP server
 http.createServer(app).listen(httpPort, host, () => {
-    console.log('Hosting speedtest server on httpPort ' + httpPort + ', host ' + host);
+    console.log(`Hosting speedtest server on httpPort ${httpPort}, host ${host}`);
 });
 
+// Create HTTPS server if privateKey and certificate are provided
 if (privateKey && certificate) {
     https.createServer({ key: privateKey, cert: certificate }, app).listen(httpsPort, host, () => {
-        console.log('Hosting speedtest server on httpsPort ' + httpsPort + ', host ' + host);
+        console.log(`Hosting speedtest server on httpsPort ${httpsPort}, host ${host}`);
     });
 }

@@ -1,5 +1,5 @@
-var downloadElement;
-var uploadElement;
+let downloadElement;
+let uploadElement;
 
 function generateRandomData(sizeInMB) {
     const totalBytes = sizeInMB * 1024 * 1024;
@@ -12,7 +12,7 @@ function generateRandomData(sizeInMB) {
 }
 
 async function startTestUpload() {
-    const dataSizeMB = 10; // Size of data to generate in megabytes
+    const dataSizeMB = 10;
     const data = generateRandomData(dataSizeMB);
     const formData = new FormData();
     formData.append('file', data, 'random_data.bin');
@@ -59,13 +59,13 @@ document.addEventListener("DOMContentLoaded", async (event) => {
     downloadElement = document.getElementById('download');
     uploadElement = document.getElementById('upload');
 
-    document.getElementById('startMeasure').addEventListener('click', async () => {
-        document.getElementById('startMeasure').classList.add('start-disabled');
-        document.getElementById('startMeasure').disabled = true;
+    const startMeasureButton = document.getElementById('startMeasure');
+    startMeasureButton.addEventListener('click', async () => {
+        startMeasureButton.classList.add('start-disabled');
+        startMeasureButton.disabled = true;
 
         downloadElement.classList.remove('measurement-active');
         uploadElement.classList.remove('measurement-active');
-
         downloadElement.classList.add('measurement-inactive');
         uploadElement.classList.add('measurement-inactive');
 
@@ -73,7 +73,6 @@ document.addEventListener("DOMContentLoaded", async (event) => {
         uploadElement.innerHTML = '0.00 Mbps';
 
         try {
-            // remove the class measurement-inactive from the download element
             downloadElement.classList.remove('measurement-inactive');
             downloadElement.classList.add('measurement-active');
 
@@ -83,9 +82,7 @@ document.addEventListener("DOMContentLoaded", async (event) => {
     
             const start = performance.now();
             let totalBytes = 0;
-    
             const chunks = [];
-            
             const reader = response.body.getReader();
     
             const readChunk = async () => {
@@ -94,36 +91,24 @@ document.addEventListener("DOMContentLoaded", async (event) => {
                     const end = performance.now();
                     const timeInSeconds = (end - start) / 1000;
                     const downloadSpeedMbps = (totalBytes * 8) / (timeInSeconds * 1024 * 1024);
-                    
                     downloadElement.innerHTML = `${downloadSpeedMbps.toFixed(2)} Mbps`;
-    
                     startTestUpload();
                     downloadElement.classList.remove('measurement-active');
-    
                     return;
                 }
     
                 totalBytes += value.byteLength;
                 chunks.push(value);
-    
-                // Continue reading the next chunk
                 readChunk();
-    
-                // show current download speed
                 const timeElapsed = (performance.now() - start) / 1000;
                 const downloadSpeedMbps = (totalBytes * 8) / (timeElapsed * 1024 * 1024);
                 downloadElement.innerHTML = `${downloadSpeedMbps.toFixed(2)} Mbps`;
             };
     
-            // Start reading the chunks
             readChunk();
-        }
-        catch (ex) {
-            console.log('Error downloading file: ');
-            console.log(ex);
-
+        } catch (ex) {
+            console.error('Error downloading file:', ex);
             downloadElement.innerHTML = 'Failed to measure download speed';
         }
-        
     });
 });
