@@ -2,7 +2,7 @@
 var downloadElement;
 var uploadElement;
 
-var amountDownloadTests = 10;
+var amountDownloadTests = 1;
 var amountUploadTests = 10;
 
 function showDownloadSpeed(speed) {
@@ -35,9 +35,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 totalMebiDownloaded += 1;
                 totalTime += time;
 
-                let speed = (1 / (time / 1000)) / 1024;
-
-                showDownloadSpeed(speed);
+                console.log(`Downloaded 1 MebiByte in ${time} ms`);
                 
             });
 
