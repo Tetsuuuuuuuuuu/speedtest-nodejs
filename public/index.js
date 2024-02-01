@@ -28,23 +28,21 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 method: 'GET'
             }).then(async (response) => {
                 let end = new Date().getTime();
-                let time = end - start;
-
-                // get the data from the response body
-                let data = await response.arrayBuffer();
-                let size = data.byteLength;
-
-                console.log(`Downloaded ${size} bytes in ${time} ms`);
-                console.log(data);
-
-                let speed = size / time; // bytes per millisecond
+                let time = (end - start) / 1000; // Convert milliseconds to seconds
                 
-                speed = speed / 1024 / 1024 * 1000;
-
-                console.log(`Download speed: ${speed} MB/s`);
-               
+                // Assuming 1 MB = 1048576 bytes
+                let downloadedSizeInBytes = 1048576; // 1MB in bytes
                 
+                let downloadSpeed = downloadedSizeInBytes / time;
+
+                let downloadSpeedKBps = downloadSpeed / 1024; // Convert bytes/s to KB/s
+                let downloadSpeedMbps = downloadSpeed * 8 / 1000000; // Convert bytes/s to Mbps
+
+                console.log("Download speed:\n" + downloadSpeed + " bytes/second \n" + downloadSpeedKBps + " KB/s \n" + downloadSpeedMbps + " Mbps");
+
+
             });
+            
 
             await new Promise((resolve) => {
                 setTimeout(() => {
