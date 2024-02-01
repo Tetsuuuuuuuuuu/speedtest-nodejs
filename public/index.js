@@ -33,6 +33,8 @@ async function startTestUpload() {
             console.log('File uploaded successfully');
             console.log(`Upload speed: ${uploadSpeedMbps.toFixed(2)} Mbps`);
             // Handle success
+
+            uploadElement.innerHTML = `${uploadSpeedMbps.toFixed(2)} Mbps`;
         } else {
             console.error('Upload failed');
             // Handle failure
@@ -69,7 +71,7 @@ document.addEventListener("DOMContentLoaded", async (event) => {
                 downloadElement.innerHTML = `${downloadSpeedMbps.toFixed(2)} Mbps`;
 
                 startTestUpload();
-                
+
                 return;
             }
 
