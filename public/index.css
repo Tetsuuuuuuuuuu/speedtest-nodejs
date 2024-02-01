@@ -76,7 +76,7 @@ h2 {
     display: inline-block;
     background-image: url(./logo_noText.png);
     background-position: center;
-    background-size: 100%;
+    background-size: cover;
     background-repeat: no-repeat;
 }
 
@@ -94,6 +94,7 @@ h2 {
 
 .legalContainer span {
     margin-left: 20px;
+    margin-right: 20px;
 }
 
 .legalContainer a {
@@ -128,4 +129,58 @@ h2 {
 
 .start-disabled:hover {
     background-color: rgb(0, 82, 134) !important;
+}
+
+@media (max-width: 450px) {
+    h1 {
+        font-size: 60px;
+    }
+
+    .logo {
+        width: 90vw;
+        height: 90vw;
+    }
+
+    h5 {
+        font-size: 25px;
+    }
+
+    h2 {
+        font-size: 30px;
+    }
+
+    #startMeasure {
+        cursor: pointer;
+        border: none;
+        width: 200px;
+        height: 35px;
+        color: white;
+        background-color: rgb(0, 82, 134);
+        border-radius: 3px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 15px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 20px;
+        margin-bottom: 70px;
+        transition-duration: 300ms;
+    }
+
+    .measurement-active {
+        font-size: 35px;
+    }
+
+
+    .legalContainer {
+        position: fixed;
+        bottom: 10px;
+        right: 0px;
+        width: auto;
+        max-width: 100%;
+        height: auto;
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        justify-content: center;
+    }
 }
