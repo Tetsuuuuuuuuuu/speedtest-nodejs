@@ -3,7 +3,7 @@ var uploadElement;
 
 const totalTime = 15 * 1000; // Total time in milliseconds
 const interval = 2000; // Interval between tests in milliseconds
-const numTests = Math.ceil(totalTime / interval); // Number of tests to perform
+const numTests = 15; // Number of tests to perform
 let downloadSpeedSum = 0;
 let uploadSpeedSum = 0;
 let testsCompleted = 0;
