@@ -36,6 +36,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 totalTime += time;
 
                 console.log(`Downloaded 1 MebiByte in ${time} ms`);
+
+                console.log(response)
                 
             });
 
