@@ -53,11 +53,7 @@ app.get("/", (req, res) => {
 // Implement Download and Upload routes
 
 // Download route
-app.get('/download', (req, res) => {
-    const fileSize = 100 * 1024 * 1024; // 100MB in bytes
-    const buffer = Buffer.alloc(1024 * 1024); // 1MB buffer size
-    let remaining = fileSize;
-    
+app.get('/download', (req, res) => {   
     res.setHeader('Content-Type', 'application/octet-stream');
     res.setHeader('Content-Disposition', 'attachment; filename=random.bin');
     res.setHeader('Content-Length', fileSize);
@@ -65,23 +61,23 @@ app.get('/download', (req, res) => {
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');
     
-    // Create a function to send the data in chunks
-    const sendData = () => {
-        if (remaining <= 0) {
-            res.end();
-            return;
+    console.log("Sending data...");
+    let baseTime = new Date().getTime();
+
+    // Sends up to 100MiB or for 15 seconds, whichever comes first.
+    for (let i = 0; i < 100; i++) {
+        let currentTime = new Date().getTime();
+        
+        if (currentTime - baseTime > 15000) {
+            console.log('15s elapsed');
+            break;
         }
 
-        const chunkSize = Math.min(remaining, buffer.length);
-        res.write(buffer.slice(0, chunkSize));
-        remaining -= chunkSize;
+        res.write(randomData);
+    }
 
-        // Schedule sending the next chunk
-        setImmediate(sendData);
-    };
-
-    // Start sending data
-    sendData();
+    console.log('Finished sending data');
+    res.end();
 });
 
 
