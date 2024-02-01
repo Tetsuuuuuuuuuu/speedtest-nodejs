@@ -53,6 +53,9 @@ app.get("/", (req, res) => {
 
 // Download route
 app.get('/download', (req, res) => {
+  // Prevent caching
+  res.set('Cache-Control', 'no-store');
+
   // Start measuring time
   const startTime = process.hrtime();
 
@@ -73,6 +76,7 @@ app.get('/download', (req, res) => {
 
   console.log(`Download speed: ${downloadSpeedMBps.toFixed(2)} MB/s`);
 });
+
 
 // Upload route
 app.post('/upload', (req, res) => {
