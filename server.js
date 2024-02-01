@@ -98,7 +98,6 @@ app.get('/download', async (req, res) => {
             let currentTime = new Date().getTime();
 
             if (currentTime - baseTime > 15000) {
-                console.log('15s elapsed');
                 break;
             }
 
@@ -109,7 +108,6 @@ app.get('/download', async (req, res) => {
             });
         }
 
-        console.log('Finished sending data');
         res.end();
     }
     catch (e) {
