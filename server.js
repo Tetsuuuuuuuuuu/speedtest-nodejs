@@ -53,29 +53,34 @@ app.get("/", (req, res) => {
 // Implement Download and Upload routes
 
 // Download route
-app.get('/download', (req, res) => {   
-    // Sets the headers for the download
-    res.setHeader('Content-Type', 'application/octet-stream');
-    res.setHeader('Content-Disposition', 'attachment; filename=download.bin');
-    res.setHeader('Cache-Control', 'no-cache');
-    
-    console.log("Sending data...");
-    let baseTime = new Date().getTime();
+app.get('/download', (req, res) => {
+    try {
+        // Sets the headers for the download
+        res.setHeader('Content-Type', 'application/octet-stream');
+        res.setHeader('Content-Disposition', 'attachment; filename=download.bin');
+        res.setHeader('Cache-Control', 'no-cache');
 
-    // Sends up to 100MiB or for 15 seconds, whichever comes first.
-    for (let i = 0; i < 100; i++) {
-        let currentTime = new Date().getTime();
+        console.log("Sending data...");
+        let baseTime = new Date().getTime();
 
-        if (currentTime - baseTime > 15000) {
-            console.log('15s elapsed');
-            break;
+        // Sends up to 100MiB or for 15 seconds, whichever comes first.
+        for (let i = 0; i < 100; i++) {
+            let currentTime = new Date().getTime();
+
+            if (currentTime - baseTime > 15000) {
+                console.log('15s elapsed');
+                break;
+            }
+
+            res.write(randomData);
         }
 
-        res.write(randomData);
+        console.log('Finished sending data');
+        res.end();
     }
-
-    console.log('Finished sending data');
-    res.end();
+    catch (e) {
+        console.log(e);
+    }
 });
 
 
