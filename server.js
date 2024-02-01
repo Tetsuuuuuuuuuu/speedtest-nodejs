@@ -14,6 +14,10 @@ var certificate = null;
 
 app.use('/.well-known', express.static(path.join(__dirname, ".well-known")))
 app.use('/public', express.static(path.join(__dirname, "public")))
+
+// allow acces to /favicon.ico without error
+app.get('/favicon.ico', (req, res) => res.send("public/favicon.ico"));
+
 app.set("view engine", "ejs")
 
 // Configure storage for uploaded files
