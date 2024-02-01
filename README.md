@@ -6,7 +6,7 @@
 
 <h2>What is this</h2>
 
-<a href="speedtest.peer2.live">Live Demo</a>
+<a href="https://speedtest.peer2.live">Live Demo</a>
 
 This project allows anyone to setup his own http and https speedtesting Website quick and simple.
 
