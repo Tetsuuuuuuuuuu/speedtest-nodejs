@@ -54,7 +54,7 @@ app.get("/", (req, res) => {
 
 // Download route
 app.get('/download', (req, res) => {
-    let data = crypto.randomBytes(10 * (1024 * 1024));
+    let data = crypto.randomBytes(100 * (1024 * 1024));
 
     res.setHeader('Content-Type', 'application/octet-stream');
     res.setHeader('Content-Disposition', 'attachment; filename=random.bin');
