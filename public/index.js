@@ -26,37 +26,22 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
             await fetch('/download', {
                 method: 'GET'
-            }).then((response) => {
-                let reader = response.body.getReader();
+            }).then(async (response) => {
+                let end = new Date().getTime();
+                let time = end - start;
 
-                return new ReadableStream({
-                    start(controller) {
-                        return pump();
+                console.log(response.body);
 
-                        function pump() {
-                            return reader.read().then(({ done, value }) => {
-                                if (done) {
-                                    controller.close();
-                                    return;
-                                }
+                // This downloaded 1 MebiByte (1024)
 
-                                totalMebiDownloaded += value.length / 1024 / 1024;
-                                showDownloadSpeed(totalMebiDownloaded / ((new Date().getTime() - start) / 1000));
+                totalMebiDownloaded += 1;
+                totalTime += time;
 
-                                controller.enqueue(value);
-                                return pump();
-                            });
-                        }
-                    }
-                });
-            }).then((stream) => {
-                return new Response(stream, { headers: { "Content-Type": "application/octet-stream" } }).arrayBuffer();
-            }).then((buffer) => {
-                totalTime += new Date().getTime() - start;
+                console.log(`Downloaded 1 MebiByte in ${time} ms`);
+
+               
+                
             });
-            
-
-            
 
             await new Promise((resolve) => {
                 setTimeout(() => {
