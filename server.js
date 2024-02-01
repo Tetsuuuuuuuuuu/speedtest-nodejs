@@ -117,7 +117,9 @@ app.get('/download', async (req, res) => {
 
 
 // Upload route
-app.post('/upload', upload.single('file'));
+app.post('/upload', upload.single('file'), (req, res) => {
+    res.sendStatus(200);
+});
 
 // Create HTTP server
 http.createServer(app).listen(httpPort, host, () => {
