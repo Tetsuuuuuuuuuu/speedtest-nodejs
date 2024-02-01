@@ -1,0 +1,131 @@
+
+body {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #151515;
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    overflow-x: hidden;
+    overflow-y: auto;
+    justify-content: center;
+}
+
+body * {
+    padding: 0;
+    margin: 0;
+}
+
+h1 {
+    position: relative;
+    display: inline-block;
+    height: auto;
+    width: 100%;
+    font-size: 80px;
+    line-height: 70px;
+}
+
+h5 {
+    font-size: 30px;
+    line-height: 40px;
+    margin-top: 40px;
+}
+
+h2 {
+    color: rgb(0, 82, 134);
+    font-family: monospace;
+    font-size: 50px;
+}
+
+#startMeasure:hover {
+    background-color: rgb(0, 95, 154);
+}
+
+#startMeasure {
+    cursor: pointer;
+    border: none;
+    width: 200px;
+    height: 35px;
+    color: white;
+    background-color: rgb(0, 82, 134);
+    border-radius: 3px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 15px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 70px;
+    transition-duration: 300ms;
+}
+
+.measurement-inactive {
+    opacity: .2;
+}
+
+.logo {
+    margin-left: auto;
+    margin-right: auto;
+    width: 400px;
+    height: 400px;
+    display: inline-block;
+    background-image: url(./logo_noText.png);
+    background-position: center;
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
+
+.legalContainer {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.legalContainer span {
+    margin-left: 20px;
+}
+
+.legalContainer a {
+    margin-left: 20px;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    transition-duration: 300ms;
+}
+
+.legalContainer a:hover {
+    color: rgb(0, 119, 193);
+}
+
+.measurement-active {
+    font-size: 60px;
+}
+
+#download {
+    transition-duration: 300ms;
+}
+
+#upload {
+    transition-duration: 300ms;
+}
+
+.start-disabled {
+    opacity: .4;
+    cursor: not-allowed !important;
+}
+
+.start-disabled:hover {
+    background-color: rgb(0, 82, 134) !important;
+}

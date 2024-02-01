@@ -19,6 +19,9 @@ async function startTestUpload() {
 
     const uploadStart = performance.now();
 
+    uploadElement.classList.remove('measurement-inactive');
+    uploadElement.classList.add('measurement-active');
+
     try {
         const response = await fetch('/upload', {
             method: 'POST',
@@ -32,16 +35,23 @@ async function startTestUpload() {
             
             console.log('File uploaded successfully');
             console.log(`Upload speed: ${uploadSpeedMbps.toFixed(2)} Mbps`);
-            // Handle success
 
             uploadElement.innerHTML = `${uploadSpeedMbps.toFixed(2)} Mbps`;
         } else {
             console.error('Upload failed');
-            // Handle failure
+            uploadElement.innerHTML = 'Failed to measure upload speed';
         }
     } catch (error) {
+        uploadElement.innerHTML = 'Failed to measure upload speed';
         console.error('Error uploading file:', error);
-        // Handle error
+    }
+    finally {
+        setTimeout(() => {
+            document.getElementById('startMeasure').classList.remove('start-disabled');
+            document.getElementById('startMeasure').disabled = false;
+        }, 5000);
+
+        uploadElement.classList.remove('measurement-active');
     }
 }
 
@@ -50,44 +60,70 @@ document.addEventListener("DOMContentLoaded", async (event) => {
     uploadElement = document.getElementById('upload');
 
     document.getElementById('startMeasure').addEventListener('click', async () => {
-        const response = await fetch('/download');
-        const contentDisposition = response.headers.get('content-disposition');
-        const filename = contentDisposition.split('filename=')[1];
+        document.getElementById('startMeasure').classList.add('start-disabled');
+        document.getElementById('startMeasure').disabled = true;
 
-        const start = performance.now();
-        let totalBytes = 0;
+        downloadElement.classList.remove('measurement-active');
+        uploadElement.classList.remove('measurement-active');
 
-        const chunks = [];
-        
-        const reader = response.body.getReader();
+        downloadElement.classList.add('measurement-inactive');
+        uploadElement.classList.add('measurement-inactive');
 
-        const readChunk = async () => {
-            const { done, value } = await reader.read();
-            if (done) {
-                const end = performance.now();
-                const timeInSeconds = (end - start) / 1000;
-                const downloadSpeedMbps = (totalBytes * 8) / (timeInSeconds * 1024 * 1024);
-                
+        downloadElement.innerHTML = '0.00 Mbps';
+        uploadElement.innerHTML = '0.00 Mbps';
+
+        try {
+            // remove the class measurement-inactive from the download element
+            downloadElement.classList.remove('measurement-inactive');
+            downloadElement.classList.add('measurement-active');
+
+            const response = await fetch('/download');
+            const contentDisposition = response.headers.get('content-disposition');
+            const filename = contentDisposition.split('filename=')[1];
+    
+            const start = performance.now();
+            let totalBytes = 0;
+    
+            const chunks = [];
+            
+            const reader = response.body.getReader();
+    
+            const readChunk = async () => {
+                const { done, value } = await reader.read();
+                if (done) {
+                    const end = performance.now();
+                    const timeInSeconds = (end - start) / 1000;
+                    const downloadSpeedMbps = (totalBytes * 8) / (timeInSeconds * 1024 * 1024);
+                    
+                    downloadElement.innerHTML = `${downloadSpeedMbps.toFixed(2)} Mbps`;
+    
+                    startTestUpload();
+                    downloadElement.classList.remove('measurement-active');
+    
+                    return;
+                }
+    
+                totalBytes += value.byteLength;
+                chunks.push(value);
+    
+                // Continue reading the next chunk
+                readChunk();
+    
+                // show current download speed
+                const timeElapsed = (performance.now() - start) / 1000;
+                const downloadSpeedMbps = (totalBytes * 8) / (timeElapsed * 1024 * 1024);
                 downloadElement.innerHTML = `${downloadSpeedMbps.toFixed(2)} Mbps`;
-
-                startTestUpload();
-
-                return;
-            }
-
-            totalBytes += value.byteLength;
-            chunks.push(value);
-
-            // Continue reading the next chunk
+            };
+    
+            // Start reading the chunks
             readChunk();
+        }
+        catch (ex) {
+            console.log('Error downloading file: ');
+            console.log(ex);
 
-            // show current download speed
-            const timeElapsed = (performance.now() - start) / 1000;
-            const downloadSpeedMbps = (totalBytes * 8) / (timeElapsed * 1024 * 1024);
-            downloadElement.innerHTML = `${downloadSpeedMbps.toFixed(2)} Mbps`;
-        };
-
-        // Start reading the chunks
-        readChunk();
+            downloadElement.innerHTML = 'Failed to measure download speed';
+        }
+        
     });
 });
