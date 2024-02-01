@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 let size = data.byteLength;
 
                 console.log(`Downloaded ${size} bytes in ${time} ms`);
-                console.log(`Data: ${data}`);
+                console.log(data);
 
                 let speed = size / time; // bytes per millisecond
                 
