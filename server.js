@@ -64,7 +64,7 @@ app.get('/download', async (req, res) => {
         let baseTime = new Date().getTime();
 
         // Sends up to 100MiB or for 15 seconds, whichever comes first.
-        for (let i = 0; i < 100; i++) {
+        for (let i = 0; i < 1000; i++) {
             let currentTime = new Date().getTime();
 
             if (currentTime - baseTime > 15000) {
