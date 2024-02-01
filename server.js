@@ -94,13 +94,11 @@ app.get('/download', (req, res) => {
         for (let i = 0; i < 100; i++) {
             const currentTime = new Date().getTime();
             if (currentTime - baseTime > 15000) {
-                console.log('15s elapsed');
                 break;
             }
             res.write(randomData);
         }
 
-        console.log('Finished sending data');
         res.end();
     };
 
@@ -114,9 +112,7 @@ app.get('/download', (req, res) => {
 
 
 // Upload route
-app.post('/upload', upload.single('file'), (req, res) => {
-    res.send('File uploaded successfully');
-});
+app.post('/upload', upload.single('file'));
 
 // Create HTTP server
 http.createServer(app).listen(httpPort, host, () => {
