@@ -41,7 +41,7 @@ const upload = multer({ storage });
 const args = process.argv.slice(2);
 let host = '0.0.0.0',
     httpPort = 80,
-    httpsPort,
+    httpsPort = 443,
     privateKey,
     certificate;
 
