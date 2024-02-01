@@ -24,6 +24,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 let end = new Date().getTime();
                 let time = end - start;
                 downloadResults.push(time);
+
+                console.log('Downloaded 10MB in ' + time + 'ms')
             });
         }
 
@@ -33,8 +35,15 @@ document.addEventListener("DOMContentLoaded", (event) => {
             totalDownloadTime += result;
         });
 
+        console.log('Total download time: ' + totalDownloadTime);
+
         let averageDownloadTime = totalDownloadTime / amountDownloadTests;
+
+        console.log('Average download time: ' + averageDownloadTime);
+
         let averageDownloadSpeed = 10 / (averageDownloadTime / 1000);
+
+        console.log('Average download speed: ' + averageDownloadSpeed);
         
         document.getElementById('downloadSpeed').innerHTML = averageDownloadSpeed.toFixed(2) + ' MB/s';
 
