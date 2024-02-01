@@ -21,7 +21,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
             }).then((response) => {
                 let end = new Date().getTime();
                 let time = end - start;
-                downloadResults.push(time);
 
                 // this is what we downloaded: crypto.randomBytes(10 * (1024 * 1024))
 
