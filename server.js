@@ -49,7 +49,6 @@ app.get("/", (req, res) => {
   res.render("index.ejs")
 });
 
-
 // Implement Download and Upload routes
 
 // Download route
@@ -68,7 +67,7 @@ app.get('/download', (req, res) => {
   const endTime = process.hrtime(startTime);
 
   // Calculate download speed
-  const elapsedTime = endTime[0] + endTime[1] / 1e9; // in seconds
+  const elapsedTime = (endTime[0] * 1e9 + endTime[1]) / 1e9; // in seconds
   const fileSizeMB = randomData.length / 1024 / 1024; // in MB
   const downloadSpeedMBps = fileSizeMB / elapsedTime;
 
@@ -88,16 +87,13 @@ app.post('/upload', (req, res) => {
   req.on('end', () => {
     const endTime = process.hrtime(startTime);
 
-    const elapsedTime = endTime[0] + endTime[1] / 1e9; // in seconds
+    const elapsedTime = (endTime[0] * 1e9 + endTime[1]) / 1e9; // in seconds
     const uploadSpeedMBps = dataReceived / 1024 / 1024 / elapsedTime; // in MB/s
 
     console.log(`Upload speed: ${uploadSpeedMBps.toFixed(2)} MB/s`);
     res.sendStatus(200);
   });
 });
-
-
-
 
 // Creates a HTTP & a HTTPS web server with the specified options
 http.createServer(app).listen(httpPort, host, () => {
