@@ -3,10 +3,11 @@ var uploadElement;
 
 const totalTime = 15 * 1000; // Total time in milliseconds
 const interval = 2000; // Interval between tests in milliseconds
-const numTests = 15; // Number of tests to perform
+const numTestsPerPhase = 10; // Number of tests per phase
 let downloadSpeedSum = 0;
 let uploadSpeedSum = 0;
 let testsCompleted = 0;
+let phase = 'download'; // Current phase ('download' or 'upload')
 
 // Function to test download speed
 function testDownloadSpeed() {
@@ -21,7 +22,17 @@ function testDownloadSpeed() {
       const downloadSpeed = fileSizeMB / downloadTime; // MB/s
       downloadSpeedSum += downloadSpeed;
       testsCompleted++;
-      showResults();
+      if (testsCompleted < numTestsPerPhase) {
+        setTimeout(startNextTest, interval);
+      } else {
+        if (phase === 'download') {
+          phase = 'upload';
+          testsCompleted = 0;
+          startNextTest();
+        } else {
+          showResults();
+        }
+      }
     })
     .catch(error => {
       console.error('Error during download:', error);
@@ -48,21 +59,32 @@ function testUploadSpeed() {
       const uploadSpeed = uploadSizeMB / uploadTime; // MB/s
       uploadSpeedSum += uploadSpeed;
       testsCompleted++;
-      showResults();
+      if (testsCompleted < numTestsPerPhase) {
+        setTimeout(startNextTest, interval);
+      } else {
+        showResults();
+      }
     })
     .catch(error => {
       console.error('Error during upload:', error);
     });
 }
 
+// Function to start next test
+function startNextTest() {
+  if (phase === 'download') {
+    testDownloadSpeed();
+  } else {
+    testUploadSpeed();
+  }
+}
+
 // Function to show the final results
 function showResults() {
-  //if (testsCompleted === numTests) {
-    const avgDownloadSpeed = downloadSpeedSum / numTests;
-    const avgUploadSpeed = uploadSpeedSum / numTests;
-    downloadElement.innerText = `${avgDownloadSpeed.toFixed(2)} MB/s`;
-    uploadElement.innerText = `${avgUploadSpeed.toFixed(2)} MB/s`;
-  //}
+  const avgDownloadSpeed = downloadSpeedSum / numTestsPerPhase;
+  const avgUploadSpeed = uploadSpeedSum / numTestsPerPhase;
+  downloadElement.innerText = `${avgDownloadSpeed.toFixed(2)} MB/s`;
+  uploadElement.innerText = `${avgUploadSpeed.toFixed(2)} MB/s`;
 }
 
 document.addEventListener("DOMContentLoaded", (event) => {
@@ -73,14 +95,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
     // Reset variables
     downloadSpeedSum = 0;
     uploadSpeedSum = 0;
-    testsCompleted = 0;  
-
-    // Start tests at intervals
-    for (let i = 0; i < numTests; i++) {
-      setTimeout(() => {
-        testDownloadSpeed();
-        testUploadSpeed();
-      }, i * interval);
-    }
+    testsCompleted = 0;
+    phase = 'download';
+    startNextTest();
   });
 });
