@@ -1,3 +1,6 @@
+var downloadElement;
+var uploadElement;
+
 document.addEventListener("DOMContentLoaded", async (event) => {
     downloadElement = document.getElementById('download');
     uploadElement = document.getElementById('upload');
@@ -22,16 +25,6 @@ document.addEventListener("DOMContentLoaded", async (event) => {
                 const downloadSpeedMbps = (totalBytes * 8) / (timeInSeconds * 1024 * 1024);
                 
                 downloadElement.innerHTML = `${downloadSpeedMbps.toFixed(2)} Mbps`;
-
-                // Combine all chunks into a single blob
-                const blob = new Blob(chunks);
-                
-                // Create a download link and simulate click to download the file
-                const downloadLink = document.createElement('a');
-                downloadLink.href = window.URL.createObjectURL(blob);
-                downloadLink.download = filename;
-                document.body.appendChild(downloadLink);
-                downloadLink.click();
                 return;
             }
 
