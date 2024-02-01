@@ -20,7 +20,8 @@ document.addEventListener("DOMContentLoaded", async (event) => {
                 const end = performance.now();
                 const timeInSeconds = (end - start) / 1000;
                 const downloadSpeedMbps = (totalBytes * 8) / (timeInSeconds * 1024 * 1024);
-                console.log(`Download completed. Average speed: ${downloadSpeedMbps.toFixed(2)} Mbps`);
+                
+                downloadElement.innerHTML = `${downloadSpeedMbps.toFixed(2)} Mbps`;
 
                 // Combine all chunks into a single blob
                 const blob = new Blob(chunks);
