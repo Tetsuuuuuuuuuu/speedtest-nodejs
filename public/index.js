@@ -5,8 +5,8 @@ var uploadElement;
 var amountDownloadTests = 10;
 var amountUploadTests = 10;
 
-var totalDownloadTime = 0;
-var totalUploadTime = 0;
+var downloadResults = [];
+var uploadResults = [];
 
 document.addEventListener("DOMContentLoaded", (event) => {
     downloadElement = document.getElementById('download');
@@ -15,17 +15,29 @@ document.addEventListener("DOMContentLoaded", (event) => {
     document.getElementById('startMeasure').addEventListener('click', () => {
         // Use Path /download which sends 10MB of random data to download the data and measure the time and then divide totalDownloadTime by amountDownloadTests to get the average time
 
-        fetch('/download').then((response) => {
-            let start = performance.now();
-            response.arrayBuffer().then((buffer) => {
-                let end = performance.now();
-                totalDownloadTime += end - start;
-                amountDownloadTests--;
-                if (amountDownloadTests === 0) {
-                    downloadElement.innerText = (totalDownloadTime / 10).toFixed(2) + 'ms';
-                }
+        for (let i = 0; i < amountDownloadTests; i++) {
+            let start = new Date().getTime();
+
+            fetch('/download', {
+                method: 'GET'
+            }).then((response) => {
+                let end = new Date().getTime();
+                let time = end - start;
+                downloadResults.push(time);
+                downloadElement.innerHTML = time + 'ms';
             });
+        }
+
+        // Calculate mb/s
+        let totalDownloadTime = 0;
+        downloadResults.forEach((result) => {
+            totalDownloadTime += result;
         });
+
+        let averageDownloadTime = totalDownloadTime / amountDownloadTests;
+        let averageDownloadSpeed = 10 / (averageDownloadTime / 1000);
+        
+        document.getElementById('downloadSpeed').innerHTML = averageDownloadSpeed.toFixed(2) + ' MB/s';
 
     });
 });
