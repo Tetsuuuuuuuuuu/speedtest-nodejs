@@ -1,12 +1,12 @@
 {
-  "name": "speedtest-nodejs",
+  "name": "speedtest-nodejs-website",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
-  "author": "Ryan Peters",
+  "author": "Ryan Peters, modified by Tetsu (Tetsu#9030)",
   "dependencies": {
     "ejs": "^3.1.9",
     "express": "^4.14.1",
