@@ -5,6 +5,13 @@ var uploadElement;
 var amountDownloadTests = 10;
 var amountUploadTests = 10;
 
+function showDownloadSpeed(speed) {
+    downloadElement.innerHTML = `${speed.toFixed(2)} MB/s`;
+}
+
+function showUploadSpeed(speed) {
+    uploadElement.innerHTML = `${speed.toFixed(2)} MB/s`;
+}
 
 document.addEventListener("DOMContentLoaded", (event) => {
     downloadElement = document.getElementById('download');
@@ -38,6 +45,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 let averageSpeed = totalBytesDownloaded / (totalTime / 1000);
                 let averageSpeedInMBps = (averageSpeed / 1024) / 1024; // Convert bytes per second to megabytes per second
                 console.log(`Average download speed: ${averageSpeedInMBps.toFixed(2)} MB/s`);
+
+                showDownloadSpeed(averageSpeedInMBps.toFixed(2) + "MB/s");
             });
 
             await new Promise((resolve) => {
