@@ -35,7 +35,7 @@ Use the following command line arguments to customize its settings:
 
 If you ignore the --server-ip, --server-httpPort or --server-httpsPort they will be set to their defaults.
 
-<h3>If either the --server-privateKey or --server-certificate are not parsed only the http server will start. To enable https I recommend using <a href="https://certbot.eff.org/">certbot</a> to generate free a free ssl certificate. The required .well-known path is public by default.</h3>
+<h3>If either the --server-privateKey or --server-certificate are not parsed only the http server will start. To enable https I recommend using <a href="https://certbot.eff.org/">certbot</a> to generate a free ssl certificate. The required .well-known path is public by default.</h3>
 
 If either the private key or the certificate can not be found the server will throw an exception on startup.
 
